@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARENA — Sports Event Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c14;--bg2:#0d1220;--bg3:#111827;--card:#0f1623;--border:rgba(255,255,255,0.06);--blue:#3b82f6;--cyan:#06b6d4;--amber:#f59e0b;--green:#10b981;--red:#ef4444;--text:#f0f4ff;--muted:#64748b;--light:#94a3b8;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+.orb1{width:600px;height:600px;background:rgba(59,130,246,0.07);top:-200px;left:-200px;}
+.orb2{width:500px;height:500px;background:rgba(6,182,212,0.06);bottom:-200px;right:-100px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:70px;background:rgba(8,12,20,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;letter-spacing:4px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--cyan);}
+.nav-center{display:flex;gap:32px;}
+.nav-center a{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.nav-center a:hover{color:var(--text);}
+.nav-right{display:flex;gap:12px;align-items:center;}
+.btn-admin{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber);padding:8px 20px;background:transparent;cursor:pointer;transition:all 0.2s;}
+.btn-admin:hover{background:var(--amber);color:var(--bg);}
+.btn-register-nav{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--bg);background:var(--cyan);border:none;padding:8px 20px;cursor:pointer;transition:all 0.2s;}
+.btn-register-nav:hover{background:#22d3ee;}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:120px 48px 80px;position:relative;z-index:1;}
+.hero-badge{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:28px;}
+.hero-badge::before{content:'';width:32px;height:1px;background:var(--cyan);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(60px,10vw,140px);font-weight:900;line-height:0.88;letter-spacing:-2px;margin-bottom:32px;}
+.accent{color:transparent;-webkit-text-stroke:2px var(--cyan);}
+.hero-sub{font-size:17px;color:var(--light);line-height:1.7;font-weight:300;max-width:520px;margin-bottom:48px;}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;padding:16px 40px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(59,130,246,0.4);}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.15);padding:16px 40px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan);}
+.stats-bar{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(13,18,32,0.9);}
+.stat-item{padding:32px 48px;border-right:1px solid var(--border);text-align:center;}
+.stat-item:last-child{border-right:none;}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--cyan);letter-spacing:-1px;line-height:1;margin-bottom:6px;}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.section{padding:100px 48px;position:relative;z-index:1;}
+.sec-header{margin-bottom:60px;}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-tag::before{content:'';width:24px;height:1px;background:var(--cyan);}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,5vw,68px);font-weight:900;line-height:1;letter-spacing:-1px;}
+.tournaments-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px;}
+.t-card{background:var(--card);border:1px solid var(--border);padding:30px;transition:all 0.3s;position:relative;overflow:hidden;cursor:pointer;}
+.t-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity 0.3s;}
+.t-card:hover{background:#131d2e;border-color:rgba(6,182,212,0.25);}
+.t-card:hover::before{opacity:1;}
+.t-sport-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;margin-bottom:18px;}
+.badge-Football{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
+.badge-Cricket{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);}
+.badge-Basketball{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);}
+.badge-Tennis{background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);}
+.badge-Esports{background:rgba(168,85,247,0.15);color:#a855f7;border:1px solid rgba(168,85,247,0.3);}
+.badge-Marathon{background:rgba(249,115,22,0.15);color:#f97316;border:1px solid rgba(249,115,22,0.3);}
+.badge-Badminton{background:rgba(6,182,212,0.15);color:#06b6d4;border:1px solid rgba(6,182,212,0.3);}
+.badge-Volleyball{background:rgba(236,72,153,0.15);color:#ec4899;border:1px solid rgba(236,72,153,0.3);}
+.t-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:1px;margin-bottom:14px;line-height:1.1;}
+.t-meta{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.t-meta-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--light);}
+.icon{font-size:13px;width:18px;flex-shrink:0;margin-top:1px;}
+.prize-display{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.prize-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--amber);text-transform:uppercase;}
+.prize-amount{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--amber);letter-spacing:-1px;}
+.spots-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.spots-text{font-size:12px;color:var(--muted);}
+.spots-num{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--cyan);}
+.prog-bar{background:rgba(255,255,255,0.05);height:4px;margin-bottom:14px;border-radius:2px;}
+.prog-fill{background:linear-gradient(90deg,var(--blue),var(--cyan));height:100%;border-radius:2px;transition:width 0.5s;}
+.btn-reg{width:100%;padding:11px;background:transparent;border:1px solid rgba(6,182,212,0.4);color:var(--cyan);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.btn-reg:hover{background:var(--cyan);color:var(--bg);}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--bg2);border:1px solid rgba(6,182,212,0.2);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;animation:mIn 0.3s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(20px) scale(0.97);}to{opacity:1;transform:none;}}
+.modal-header{padding:22px 30px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:900;letter-spacing:1px;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:26px 30px;}
+.fg{margin-bottom:16px;}
+.fl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.fi,.fs{width:100%;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus,.fs:focus{border-color:var(--cyan);}
+.fs{cursor:pointer;-webkit-appearance:none;}
+.fs option{background:var(--bg2);}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sub-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue),var(--cyan));border:none;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:6px;}
+.sub-btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(59,130,246,0.4);}
+.tp{background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);padding:13px 16px;margin-bottom:18px;}
+.tp-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;margin-bottom:3px;}
+.tp-det{font-size:12px;color:var(--light);}
+.admin-modal{max-width:960px;}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 30px;background:var(--bg);}
+.atab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.atab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.atc{display:none;padding:22px 30px 30px;}
+.atc.active{display:block;}
+.dt{width:100%;border-collapse:collapse;}
+.dt th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);}
+.dt td{font-size:13px;color:var(--light);padding:10px 11px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;}
+.dt tr:hover td{background:rgba(255,255,255,0.015);}
+.td-n{font-weight:600;color:var(--text);}
+.db{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border-radius:2px;}
+.del-b{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:5px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.del-b:hover{background:#ef4444;color:#fff;}
+.empty-s{text-align:center;padding:48px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;}
+.sec-act{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cnt-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.clr-btn{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:7px 13px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.clr-btn:hover{background:#ef4444;color:#fff;}
+.afg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pg{padding:38px 30px;}
+.pt{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;margin-bottom:8px;}
+.ps{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.pe{color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace;margin-top:10px;display:none;}
+.toast{position:fixed;bottom:30px;right:30px;z-index:999;background:var(--bg3);border:1px solid rgba(16,185,129,0.3);padding:13px 20px;display:flex;align-items:center;gap:10px;font-size:14px;transform:translateX(200%);transition:transform 0.3s ease;}
+.toast.show{transform:translateX(0);}
+.toast.err{border-color:rgba(239,68,68,0.4);}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.ac{background:var(--card);padding:34px;border:1px solid var(--border);}
+.ac-icon{font-size:32px;margin-bottom:12px;}
+.ac-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:700;margin-bottom:9px;letter-spacing:1px;}
+.ac-desc{font-size:14px;color:var(--light);line-height:1.7;}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:34px 48px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+.fl-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:3px;}
+.fl-logo span{color:var(--cyan);}
+.reveal{opacity:0;transform:translateY(22px);transition:all 0.55s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:768px){
+  nav{padding:0 16px;}.nav-center{display:none;}
+  .hero{padding:100px 20px 60px;}.section{padding:60px 20px;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .fr,.afg,.about-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:26px 20px;}
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <a href="#" class="logo">ARE<span>NA</span></a>
+  <div class="nav-center">
+    <a href="#tournaments">Tournaments</a>
+    <a href="#about">About</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-admin" onclick="openAdmin()">⚙ Admin</button>
+    <button class="btn-register-nav" onclick="openRegModal()">Register Now</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">Premier Sports Event Platform — India</div>
+  <h1 class="hero-title">COMPETE.<br><span class="accent">CONQUER.</span><br>CHAMPION.</h1>
+  <p class="hero-sub">Register for elite sports tournaments, track prize pools, and compete on the biggest stages. From grassroots to glory — ARENA manages it all.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="openRegModal()">⚡ Register for Tournament</button>
+    <a href="#tournaments" class="btn-secondary">View All Events</a>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-val" id="sTourneys">8</div><div class="stat-label">Active Tournaments</div></div>
+  <div class="stat-item"><div class="stat-val" id="sRegs">0</div><div class="stat-label">Registrations</div></div>
+  <div class="stat-item"><div class="stat-val" id="sPrize">₹27L</div><div class="stat-label">Total Prize Pool</div></div>
+  <div class="stat-item"><div class="stat-val">18+</div><div class="stat-label">Cities Covered</div></div>
+</div>
+
+<section class="section" id="tournaments">
+  <div class="sec-header reveal">
+    <div class="sec-tag">Upcoming Events</div>
+    <h2 class="sec-title">OPEN TOURNAMENTS<br>&amp; PRIZE POOLS</h2>
+  </div>
+  <div class="tournaments-grid" id="tGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;">Loading tournaments…</div>
+  </div>
+</section>
+
+<section class="section" id="about" style="background:var(--bg2);">
+  <div class="sec-header reveal">
+    <div class="sec-tag">Why Arena</div>
+    <h2 class="sec-title">COMPETE WITH<br>CONFIDENCE</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="ac"><div class="ac-icon">🏆</div><div class="ac-title">Massive Prize Pools</div><div class="ac-desc">Compete for real cash prizes across 8+ sports. Guaranteed payouts for top finishers at every event.</div></div>
+    <div class="ac"><div class="ac-icon">📋</div><div class="ac-title">Seamless Registration</div><div class="ac-desc">Simple online registration with instant confirmation. Track your spot and tournament details in real time.</div></div>
+    <div class="ac"><div class="ac-icon">🌐</div><div class="ac-title">Pan-India Events</div><div class="ac-desc">Events hosted across 18+ cities. Compete locally or travel to national-level championships.</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl-logo">ARE<span>NA</span></div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">© 2026 ARENA SPORTS MANAGEMENT. ALL RIGHTS RESERVED.</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">hello@arenaevents.in</div>
+</footer>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="regModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">🏅 TOURNAMENT REGISTRATION</div><button class="modal-close" onclick="closeM('regModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="tp" id="tPreview" style="display:none;"></div>
+      <div class="fg"><label class="fl">Select Tournament *</label><select class="fs" id="rTSel" onchange="updatePreview()"><option value="">— Choose a Tournament —</option></select></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Full Name *</label><input class="fi" type="text" id="rName" placeholder="Your full name"></div>
+        <div class="fg"><label class="fl">Age *</label><input class="fi" type="number" id="rAge" placeholder="Age" min="5" max="80"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Email *</label><input class="fi" type="email" id="rEmail" placeholder="your@email.com"></div>
+        <div class="fg"><label class="fl">Phone *</label><input class="fi" type="tel" id="rPhone" placeholder="+91 XXXXX XXXXX"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">City *</label><input class="fi" type="text" id="rCity" placeholder="Your city"></div>
+        <div class="fg"><label class="fl">Experience Level *</label><select class="fs" id="rLevel"><option value="">— Select —</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Professional</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">Team Name (optional)</label><input class="fi" type="text" id="rTeam" placeholder="Leave blank for individual"></div>
+      <button class="sub-btn" onclick="submitReg()">⚡ CONFIRM REGISTRATION</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal admin-modal">
+    <div class="modal-header"><div class="modal-title">⚙ ADMIN PANEL</div><button class="modal-close" onclick="closeM('adminModal')">✕</button></div>
+    <div id="aGate">
+      <div class="pg">
+        <div class="pt">Admin Access Required</div>
+        <div class="ps">Enter your administrator password to manage registrations and tournaments.</div>
+        <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="aPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')chkAdmin()"></div>
+        <button class="sub-btn" onclick="chkAdmin()">UNLOCK PANEL</button>
+        <div class="pe" id="pErr">Incorrect password. Try again.</div>
+      </div>
+    </div>
+    <div id="aContent" style="display:none;">
+      <div class="admin-tabs">
+        <button class="atab active" onclick="swTab(this,'tab-regs')">Registrations</button>
+        <button class="atab" onclick="swTab(this,'tab-tours')">Tournaments</button>
+        <button class="atab" onclick="swTab(this,'tab-add')">+ Add Tournament</button>
+      </div>
+      <div class="atc active" id="tab-regs">
+        <div class="sec-act"><div class="cnt-lbl" id="rCnt">—</div><button class="clr-btn" onclick="clrRegs()">🗑 Clear All Registrations</button></div>
+        <div style="overflow-x:auto;">
+          <table class="dt"><thead><tr><th>Name</th><th>Sport</th><th>Tournament</th><th>Email</th><th>Phone</th><th>City</th><th>Level</th><th>Team</th><th>Date</th><th>Del</th></tr></thead>
+          <tbody id="rTBody"></tbody></table>
+        </div>
+      </div>
+      <div class="atc" id="tab-tours">
+        <div class="sec-act"><div class="cnt-lbl" id="tCnt">—</div><button class="clr-btn" onclick="clrAll()">🗑 Clear Everything</button></div>
+        <div style="overflow-x:auto;">
+          <table class="dt"><thead><tr><th>Name</th><th>Sport</th><th>Date</th><th>Venue</th><th>Prize</th><th>Slots</th><th>Regs</th><th>Del</th></tr></thead>
+          <tbody id="tTBody"></tbody></table>
+        </div>
+      </div>
+      <div class="atc" id="tab-add">
+        <div class="afg">
+          <div class="fg" style="grid-column:1/-1;"><label class="fl">Tournament Name *</label><input class="fi" type="text" id="aN" placeholder="e.g. National Football Championship 2026"></div>
+          <div class="fg"><label class="fl">Sport *</label><select class="fs" id="aS"><option value="">— Select —</option><option>Football</option><option>Cricket</option><option>Basketball</option><option>Tennis</option><option>Badminton</option><option>Volleyball</option><option>Marathon</option><option>Esports</option></select></div>
+          <div class="fg"><label class="fl">Date *</label><input class="fi" type="date" id="aD"></div>
+          <div class="fg"><label class="fl">Venue / City *</label><input class="fi" type="text" id="aV" placeholder="e.g. Jawaharlal Stadium, Delhi"></div>
+          <div class="fg"><label class="fl">Prize Pool (₹) *</label><input class="fi" type="text" id="aP" placeholder="e.g. 5,00,000"></div>
+          <div class="fg"><label class="fl">Total Slots *</label><input class="fi" type="number" id="aSl" placeholder="e.g. 64" min="1"></div>
+          <div class="fg"><label class="fl">Deadline *</label><input class="fi" type="date" id="aDl"></div>
+          <div class="fg"><label class="fl">Description</label><input class="fi" type="text" id="aDesc" placeholder="Short description"></div>
+        </div>
+        <button class="sub-btn" onclick="addT()" style="margin-top:10px;">+ ADD TOURNAMENT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="tIcon">✅</span><span id="tMsg">Done!</span></div>
+
+<script>
+const ADMIN_PASS='Arena@2026';
+const RK='arena_regs_v3', TK='arena_tours_v3';
+const DEFS=[
+  {id:'t1',name:'South Asia Football Cup',sport:'Football',date:'2026-03-15',venue:'Mumbai Football Ground, Mumbai',prize:'5,00,000',slots:64,deadline:'2026-03-05',desc:'Elite regional football championship for top clubs.'},
+  {id:'t2',name:'IPL Street Cricket League',sport:'Cricket',date:'2026-04-10',venue:'DY Patil Stadium, Navi Mumbai',prize:'3,00,000',slots:32,deadline:'2026-03-30',desc:'20-over street cricket league open to all.'},
+  {id:'t3',name:'3x3 Pro Basketball Open',sport:'Basketball',date:'2026-04-18',venue:'Indira Gandhi Arena, Delhi',prize:'2,00,000',slots:48,deadline:'2026-04-08',desc:'Fast-paced 3x3 basketball tournament.'},
+  {id:'t4',name:'National Esports Championship',sport:'Esports',date:'2026-05-10',venue:'HICC, Hyderabad',prize:'8,00,000',slots:128,deadline:'2026-04-28',desc:"India's biggest esports event. Online qualifiers."},
+  {id:'t5',name:'Bangalore City Marathon',sport:'Marathon',date:'2026-04-02',venue:'Cubbon Park, Bangalore',prize:'1,50,000',slots:500,deadline:'2026-03-25',desc:"Full and half marathon through Bangalore's heart."},
+  {id:'t6',name:'India Open Tennis',sport:'Tennis',date:'2026-06-07',venue:'SDAT Tennis Stadium, Chennai',prize:'4,00,000',slots:64,deadline:'2026-05-25',desc:'Open tennis for amateur and professional players.'},
+  {id:'t7',name:'All India Badminton Cup',sport:'Badminton',date:'2026-05-20',venue:'Siri Fort Sports Complex, Delhi',prize:'2,50,000',slots:96,deadline:'2026-05-10',desc:'Singles and doubles badminton across categories.'},
+  {id:'t8',name:'Corporate Volleyball League',sport:'Volleyball',date:'2026-06-15',venue:'Decathlon Campus, Pune',prize:'1,00,000',slots:24,deadline:'2026-06-05',desc:'Team volleyball for corporate squads.'},
+];
+const EM={Football:'⚽',Cricket:'🏏',Basketball:'🏀',Tennis:'🎾',Esports:'🎮',Marathon:'🏃',Badminton:'🏸',Volleyball:'🏐'};
+function em(s){return EM[s]||'🏆';}
+function fd(d){try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function fds(d){try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short'});}catch(e){return d;}}
+// Storage
+let _tours=[], _regs=[];
+function loadDB(){
+  try{const t=localStorage.getItem(TK);_tours=t?JSON.parse(t):null;}catch(e){_tours=null;}
+  if(!_tours||!_tours.length){_tours=JSON.parse(JSON.stringify(DEFS));saveT();}
+  try{const r=localStorage.getItem(RK);_regs=r?JSON.parse(r):[];}catch(e){_regs=[];}
+}
+function saveT(){try{localStorage.setItem(TK,JSON.stringify(_tours));}catch(e){}}
+function saveR(){try{localStorage.setItem(RK,JSON.stringify(_regs));}catch(e){}}
+// Render
+function render(){
+  const grid=document.getElementById('tGrid');
+  if(!_tours.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-family:\'JetBrains Mono\',monospace;font-size:12px;">No tournaments yet. Admin can add some via the Admin panel!</div>';updateStats();popSel();return;}
+  grid.innerHTML=_tours.map(t=>{
+    const rc=_regs.filter(r=>r.tournamentId===t.id).length;
+    const sl=Math.max(0,t.slots-rc);
+    const pct=Math.min(100,Math.round((rc/t.slots)*100));
+    return `<div class="t-card" onclick="openRegModal('${t.id}')">
+      <div class="t-sport-badge badge-${t.sport}">${em(t.sport)} ${t.sport}</div>
+      <div class="t-name">${t.name}</div>
+      <div class="t-meta">
+        <div class="t-meta-row"><span class="icon">📅</span>${fd(t.date)}</div>
+        <div class="t-meta-row"><span class="icon">📍</span>${t.venue}</div>
+        <div class="t-meta-row"><span class="icon">⏰</span>Deadline: ${fds(t.deadline)}</div>
+        ${t.desc?`<div class="t-meta-row"><span class="icon">📝</span>${t.desc}</div>`:''}
+      </div>
+      <div class="prize-display"><div class="prize-label">💰 Prize Pool</div><div class="prize-amount">₹${t.prize}</div></div>
+      <div class="spots-row">
+        <div class="spots-text"><span style="color:var(--green);">${rc}</span> registered &nbsp;·&nbsp; <span style="color:var(--amber);">${sl}</span> slots left</div>
+        <div class="spots-num">${t.slots} Total</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <button class="btn-reg" onclick="event.stopPropagation();openRegModal('${t.id}')">⚡ Register Now</button>
+    </div>`;
+  }).join('');
+  updateStats();popSel();
+  setupReveal();
+}
+function updateStats(){
+  const total=_tours.reduce((s,t)=>s+(parseInt((t.prize||'0').replace(/,/g,''))||0),0);
+  document.getElementById('sTourneys').textContent=_tours.length;
+  document.getElementById('sRegs').textContent=_regs.length;
+  document.getElementById('sPrize').textContent=total>=100000?'₹'+(total/100000).toFixed(0)+'L':'₹'+total.toLocaleString('en-IN');
+}
+function popSel(){
+  const s=document.getElementById('rTSel');
+  s.innerHTML='<option value="">— Choose a Tournament —</option>'+_tours.map(t=>`<option value="${t.id}">${em(t.sport)} ${t.name}</option>`).join('');
+}
+// Register modal
+let _unlocked=false;
+function openRegModal(tid){
+  document.getElementById('regModal').classList.add('active');
+  if(tid){document.getElementById('rTSel').value=tid;updatePreview();}
+}
+function closeM(id){document.getElementById(id).classList.remove('active');}
+function updatePreview(){
+  const tid=document.getElementById('rTSel').value;
+  const p=document.getElementById('tPreview');
+  if(!tid){p.style.display='none';return;}
+  const t=_tours.find(x=>x.id===tid);
+  if(!t){p.style.display='none';return;}
+  p.style.display='block';
+  p.innerHTML=`<div class="tp-name">${em(t.sport)} ${t.name}</div><div class="tp-det">📅 ${fd(t.date)} &nbsp;·&nbsp; 📍 ${t.venue} &nbsp;·&nbsp; 💰 ₹${t.prize}</div>`;
+}
+function submitReg(){
+  const tid=document.getElementById('rTSel').value;
+  const name=document.getElementById('rName').value.trim();
+  const age=document.getElementById('rAge').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const phone=document.getElementById('rPhone').value.trim();
+  const city=document.getElementById('rCity').value.trim();
+  const level=document.getElementById('rLevel').value;
+  const team=document.getElementById('rTeam').value.trim();
+  if(!tid||!name||!age||!email||!phone||!city||!level){toast('Please fill all required fields.',true);return;}
+  const t=_tours.find(x=>x.id===tid);
+  if(!t){toast('Tournament not found!',true);return;}
+  if(_regs.find(r=>r.email===email&&r.tournamentId===tid)){toast('Email already registered for this tournament!',true);return;}
+  if(_regs.filter(r=>r.tournamentId===tid).length>=t.slots){toast('No slots available!',true);return;}
+  _regs.push({id:'r'+Date.now(),tournamentId:tid,tournamentName:t.name,sport:t.sport,name,age,email,phone,city,level,team:team||'—',date:new Date().toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});
+  saveR();
+  closeM('regModal');
+  toast('✅ '+name+' registered for '+t.name+'!');
+  ['rName','rAge','rEmail','rPhone','rCity','rTeam'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rTSel').value='';
+  document.getElementById('rLevel').value='';
+  document.getElementById('tPreview').style.display='none';
+  render();
+}
+// Admin
+function openAdmin(){
+  document.getElementById('adminModal').classList.add('active');
+  document.getElementById('aGate').style.display=_unlocked?'none':'block';
+  document.getElementById('aContent').style.display=_unlocked?'block':'none';
+}
+function chkAdmin(){
+  const p=document.getElementById('aPass').value;
+  if(p===ADMIN_PASS){_unlocked=true;document.getElementById('aGate').style.display='none';document.getElementById('aContent').style.display='block';document.getElementById('pErr').style.display='none';document.getElementById('aPass').value='';loadAdm();}
+  else{document.getElementById('pErr').style.display='block';document.getElementById('aPass').value='';}
+}
+function swTab(el,id){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.atc').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');document.getElementById(id).classList.add('active');
+  if(id!=='tab-add')loadAdm();
+}
+function loadAdm(){
+  document.getElementById('rCnt').textContent=_regs.length+' Registration(s)';
+  const rb=document.getElementById('rTBody');
+  rb.innerHTML=_regs.length===0?`<tr><td colspan="10" class="empty-s">No registrations yet.</td></tr>`:
+    _regs.map(r=>`<tr><td class="td-n">${r.name}</td><td><span class="db badge-${r.sport}">${r.sport}</span></td><td style="font-size:12px;max-width:140px;">${r.tournamentName}</td><td style="font-size:12px;">${r.email}</td><td>${r.phone}</td><td>${r.city}</td><td>${r.level}</td><td>${r.team}</td><td style="font-size:11px;white-space:nowrap;">${r.date}</td><td><button class="del-b" onclick="delR('${r.id}')">🗑</button></td></tr>`).join('');
+  document.getElementById('tCnt').textContent=_tours.length+' Tournament(s)';
+  const tb=document.getElementById('tTBody');
+  tb.innerHTML=_tours.length===0?`<tr><td colspan="8" class="empty-s">No tournaments yet.</td></tr>`:
+    _tours.map(t=>{const rc=_regs.filter(r=>r.tournamentId===t.id).length;return`<tr><td class="td-n">${t.name}</td><td><span class="db badge-${t.sport}">${t.sport}</span></td><td style="white-space:nowrap;">${fd(t.date)}</td><td style="font-size:12px;">${t.venue}</td><td style="color:var(--amber);">₹${t.prize}</td><td>${t.slots}</td><td style="color:var(--cyan);font-weight:600;">${rc}</td><td><button class="del-b" onclick="delT('${t.id}')">🗑</button></td></tr>`;}).join('');
+}
+function delR(id){if(!confirm('Delete this registration?'))return;_regs=_regs.filter(r=>r.id!==id);saveR();toast('Deleted.');loadAdm();render();}
+function delT(id){if(!confirm('Delete this tournament + its registrations?'))return;_tours=_tours.filter(t=>t.id!==id);_regs=_regs.filter(r=>r.tournamentId!==id);saveT();saveR();toast('Deleted.');loadAdm();render();}
+function clrRegs(){if(!confirm('Delete ALL registrations?'))return;_regs=[];saveR();toast('All registrations cleared.');loadAdm();render();}
+function clrAll(){if(!confirm('Delete ALL tournaments and registrations?'))return;_tours=[];_regs=[];saveT();saveR();toast('All data cleared.');loadAdm();render();}
+function addT(){
+  const name=document.getElementById('aN').value.trim(),sport=document.getElementById('aS').value,date=document.getElementById('aD').value,venue=document.getElementById('aV').value.trim(),prize=document.getElementById('aP').value.trim(),slots=parseInt(document.getElementById('aSl').value),deadline=document.getElementById('aDl').value,desc=document.getElementById('aDesc').value.trim();
+  if(!name||!sport||!date||!venue||!prize||!slots||!deadline){toast('Fill all required fields.',true);return;}
+  _tours.push({id:'t'+Date.now(),name,sport,date,venue,prize,slots,deadline,desc});saveT();
+  ['aN','aV','aP','aSl','aD','aDl','aDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('aS').value='';
+  toast('"'+name+'" added!');loadAdm();render();
+}
+// Toast
+function toast(msg,isErr=false){
+  const el=document.getElementById('toast');
+  document.getElementById('tMsg').textContent=msg;
+  document.getElementById('tIcon').textContent=isErr?'❌':'✅';
+  el.classList.toggle('err',isErr);el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+// Reveal
+function setupReveal(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal,.t-card').forEach(el=>obs.observe(el));
+}
+// Close overlay on bg click
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('active');}));
+// INIT
+loadDB();render();setupReveal();
+</script>
+</body>
+</html>
